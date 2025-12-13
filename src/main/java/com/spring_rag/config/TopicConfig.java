@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-@ConfigurationProperties(prefix = "rag")
+@ConfigurationProperties(prefix = "spring-rag")
 @Data
 public class TopicConfig {
     private Map<String, TopicInfo> topics;
