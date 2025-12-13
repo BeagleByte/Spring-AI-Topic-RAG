@@ -19,6 +19,7 @@ A production-ready multi-topic Retrieval-Augmented Generation (RAG) system built
 - Java 17+
 - Docker & Docker Compose
 - Ollama installed locally
+- qdrant installed locally
 - Maven
 
 ### Installation
