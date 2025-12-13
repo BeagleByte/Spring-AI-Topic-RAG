@@ -1,4 +1,4 @@
-package com.spring_rag.spring_rag;
+package com.spring_rag;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

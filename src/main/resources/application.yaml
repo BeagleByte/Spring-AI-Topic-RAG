@@ -1,3 +1,36 @@
 spring:
   application:
-    name: spring-rag
+    name: spring-rag-multi-topic
+
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      model:  llama2
+
+  # Point to your existing Qdrant instance
+  vectorstore:
+    qdrant:
+      host: localhost
+      port: 6334                 # Your existing Qdrant port
+      #api-key: ${QDRANT_API_KEY:  }  # If secured
+
+spring-rag:
+  topics:
+    pentesting:
+      collection-name: spring-rag-pentesting-docs   # Prefix to avoid conflicts
+      description: "Penetration Testing & Security Research"
+      model: llama2
+    iot:
+      collection-name: spring-rag-iot-docs          # Prefix to avoid conflicts
+      description: "Internet of Things & Embedded Systems"
+      model: llama2
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.ai: DEBUG
+    com.spring_rag: DEBUG
+
+server:
+  port: 8080
