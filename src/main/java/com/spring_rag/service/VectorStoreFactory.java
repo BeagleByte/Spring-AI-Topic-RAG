@@ -1,5 +1,6 @@
 package com.spring_rag.service;
 
+import com.spring_rag.exception.TopicNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -23,7 +24,7 @@ public class VectorStoreFactory {
 
     private final QdrantClient qdrantClient;
     private final TopicConfig topicConfig;
-    private final EmbeddingModel embeddingModel;  // ADD THIS
+    private final EmbeddingModel embeddingModel;
     private final Map<String, VectorStore> vectorStoreCache = new ConcurrentHashMap<>();
 
     /**
@@ -31,7 +32,7 @@ public class VectorStoreFactory {
      */
     public VectorStore getVectorStore(String topic) {
         if (!topicConfig.hasTopic(topic)) {
-            throw new IllegalArgumentException("Unknown topic: " + topic);
+            throw new TopicNotFoundException("Unknown topic: " + topic);
         }
 
         if (vectorStoreCache.containsKey(topic)) {
