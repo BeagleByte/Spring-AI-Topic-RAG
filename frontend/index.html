@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring AI RAG - Multi-Topic</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>🤖 Spring AI RAG Multi-Topic</h1>
+        <p>Separate RAGs for different knowledge domains</p>
+    </div>
+
+    <!-- Topic Selector -->
+    <div class="section">
+        <h2>📚 Select Topic</h2>
+        <div class="topic-selector">
+            <select id="topicSelect">
+                <option value="">-- Choose a Topic --</option>
+            </select>
+            <div id="topicInfo" class="topic-info"></div>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="section">
+        <h2>📤 Upload Documents</h2>
+
+        <!-- PDF Upload -->
+        <div style="margin-bottom: 20px;">
+            <h3>PDF Files</h3>
+            <div class="upload-area" id="pdfUploadArea">
+                <div>📄 Drag & drop PDF files or click to select</div>
+                <input type="file" id="pdfInput" accept=".pdf" multiple>
+            </div>
+            <div id="pdfStatus"></div>
+        </div>
+
+        <!-- Markdown Upload -->
+        <div>
+            <h3>Markdown Files</h3>
+            <div class="upload-area" id="mdUploadArea">
+                <div>📝 Drag & drop Markdown files or click to select</div>
+                <input type="file" id="mdInput" accept=". md" multiple>
+            </div>
+            <div id="mdStatus"></div>
+        </div>
+
+        <!-- File List -->
+        <div class="file-list" id="fileList" style="display: none;">
+            <h3 style="margin-bottom: 10px;">📚 Uploaded Files</h3>
+            <div id="fileItems"></div>
+        </div>
+    </div>
+
+    <!-- Query Section -->
+    <div class="section">
+        <h2>❓ Ask a Question</h2>
+        <div class="query-box">
+            <input type="text" id="queryInput" placeholder="Ask anything about your documents...">
+            <button class="btn" onclick="submitQuery()">Search & Answer</button>
+        </div>
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p>Processing your query...</p>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="section">
+        <h2>📊 System Status</h2>
+        <div id="stats"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
