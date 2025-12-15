@@ -14,7 +14,7 @@ public class DocumentResponse {
     private String filename;
     private String title;
     private String author;
-    private Integer publishingYear;
+    private String publishingYear;
     private String type;
     private String topic;         // NEW: topic identifier
     private int chunksCount;

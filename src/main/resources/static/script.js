@@ -171,7 +171,7 @@ function updateFileList() {
                 <div class="file-item">
                     <div class="info">
                         <strong>${f.filename}</strong>
-                        <p>${f.chunksCount} chunks • ${f.type. toUpperCase()}</p>
+                        <p>${f.chunksCount} chunks • ${f.type.toUpperCase()}</p>
                     </div>
                     <span class="badge">${f.status}</span>
                 </div>
@@ -224,7 +224,7 @@ async function submitQuery() {
             <div class="result">
                 <div class="answer">
                     <strong>Answer:</strong><br>
-                    ${data. answer}
+                    ${data.answer}
                 </div>
                 <div class="sources">
                     ${sourcesHtml}
@@ -243,7 +243,7 @@ async function loadStats() {
         const response = await fetch(`${API_BASE}/topics/stats`);
         const stats = await response.json();
 
-        const statsDiv = document. getElementById('stats');
+        const statsDiv = document.getElementById('stats');
         statsDiv.innerHTML = Object.entries(stats)
             .map(([topic, info]) => `
                 <div class="stat-card">
@@ -258,6 +258,6 @@ async function loadStats() {
     }
 }
 
-document.getElementById('queryInput')?. addEventListener('keypress', (e) => {
-    if (e. key === 'Enter') submitQuery();
+document.getElementById('queryInput')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitQuery();
 });

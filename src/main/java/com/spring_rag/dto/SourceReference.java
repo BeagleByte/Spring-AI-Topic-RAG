@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SourceReference {
     private String filename;
-    private String title;          // NOW INCLUDED
-    private String author;         // NOW INCLUDED
-    private Integer publishingYear; // NOW INCLUDED
+    private String title;
+    private String author;
+    private String publishingYear;
     private String type;
 }

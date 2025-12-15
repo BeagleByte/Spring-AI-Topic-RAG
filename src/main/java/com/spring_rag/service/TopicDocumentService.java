@@ -98,9 +98,9 @@ public class TopicDocumentService {
             log.info("Stored {} chunks in {} topic RAG", splitDocuments.size(), topic);
 
             // Create response
-            String title = (String) pdfMetadata.get("title");
-            String author = (String) pdfMetadata.get("author");
-            Integer publishingYear =  Integer.parseInt(pdfMetadata.get("publishingYear"));
+            String title = pdfMetadata.get("title");
+            String author = pdfMetadata.get("author");
+            String publishingYear =  pdfMetadata.get("publishingYear");
 
             DocumentResponse response = DocumentResponse.builder()
                     .id(docId)

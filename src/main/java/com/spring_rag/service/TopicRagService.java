@@ -61,7 +61,7 @@ public class TopicRagService {
                 String filename = (String) metadata.getOrDefault("filename", "unknown");
                 String title = (String) metadata.getOrDefault("title", filename);
                 String author = (String) metadata.getOrDefault("author", "Unknown");
-                Integer publishingYear = (Integer) metadata.getOrDefault("publishingYear", null);
+                String publishingYear = metadata.getOrDefault("publishingYear", "Unknown").toString();
 
                 contextBuilder.append("--- Source: ").append(filename);
                 if (!title.equals(filename)) {

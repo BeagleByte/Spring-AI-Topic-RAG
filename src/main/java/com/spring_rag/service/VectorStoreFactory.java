@@ -65,10 +65,23 @@ public class VectorStoreFactory {
 
         topicConfig.getAllTopics().forEach((topic, info) -> {
             try {
+                String collectionName = info.getCollectionName();
                 Map<String, Object> topicStats = new HashMap<>();
-                topicStats.put("collection", info.getCollectionName());
+                topicStats.put("collection", collectionName);
                 topicStats.put("description", info.getDescription());
                 topicStats.put("status", "active");
+
+                // Get vector count from Qdrant collection
+                try {
+                    var collectionInfo = qdrantClient.getCollectionInfoAsync(collectionName).get();
+                    long vectorCount = collectionInfo.getPointsCount();
+                    topicStats.put("vectors_count", vectorCount);
+                    log.debug("Collection '{}' has {} vectors", collectionName, vectorCount);
+                } catch (Exception ex) {
+                    log.warn("Failed to get vector count for collection '{}': {}", collectionName, ex.getMessage());
+                    topicStats.put("vectors_count", 0);
+                }
+
                 stats.put(topic, topicStats);
             } catch (Exception ex) {
                 log.warn("Error getting stats for topic: {}", topic, ex);
