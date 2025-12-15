@@ -2,13 +2,21 @@ spring:
   application:
     name: spring-rag-multi-topic
 
+  # File upload configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB      # Maximum size for a single file
+      max-request-size: 100MB   # Maximum size for the entire request
+
   ai:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: llama2                    # For text generation (answering questions)
+        model: llama3.2:3b                    # For text generation (answering questions)
       embedding:
-        model: nomic-embed-text          # For creating vectors (embeddings)
+        model: "nomic-embed-text"
+        base-url: "http://localhost:11434"       # For creating vectors (embeddings)
 
   # Point to your existing Qdrant instance
   vectorstore:
@@ -22,11 +30,11 @@ spring-rag:
     pentesting:
       collection-name: spring-rag-pentesting-docs   # Prefix to avoid conflicts
       description: "Penetration Testing & Security Research"
-      model: llama2
+      model: llama3.2:3b
     iot:
       collection-name: spring-rag-iot-docs          # Prefix to avoid conflicts
       description: "Internet of Things & Embedded Systems"
-      model: llama2
+      model: llama3.2:3b
 
 
 logging:
@@ -36,4 +44,4 @@ logging:
     com.spring_rag: DEBUG
 
 server:
-  port: 8080
+  port: 4444

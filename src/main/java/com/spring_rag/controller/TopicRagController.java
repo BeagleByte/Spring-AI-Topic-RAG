@@ -10,9 +10,8 @@ import com.spring_rag.service.VectorStoreFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -33,16 +32,16 @@ public class TopicRagController {
      * Get all available topics
      */
     @GetMapping
-    public Mono<Map<String, TopicConfig. TopicInfo>> getTopics() {
-        return Mono.just(topicConfig.getAllTopics());
+    public Map<String, TopicConfig.TopicInfo> getTopics() {
+        return topicConfig.getAllTopics();
     }
     
     /**
      * Get collection stats for all topics
      */
     @GetMapping("/stats")
-    public Mono<Map<String, Object>> getStats() {
-        return Mono.fromCallable(vectorStoreFactory::getCollectionStats);
+    public Map<String, Object> getStats() {
+        return vectorStoreFactory.getCollectionStats();
     }
     
     /**
@@ -50,10 +49,10 @@ public class TopicRagController {
      */
     @PostMapping(value = "/{topic}/documents/upload/pdf",
                  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<DocumentResponse> uploadPdfToTopic(
+    public DocumentResponse uploadPdfToTopic(
             @PathVariable String topic,
-            @RequestPart("file") FilePart file) {
-        log.info("Uploading PDF to topic '{}':  {}", topic, file.filename());
+            @RequestPart("file") MultipartFile file) {
+        log.info("Uploading PDF to topic '{}': {}", topic, file.getOriginalFilename());
         return documentService.uploadPdfToTopic(topic, file);
     }
     
@@ -61,12 +60,12 @@ public class TopicRagController {
      * Upload Markdown to a specific topic
      */
     @PostMapping(value = "/{topic}/documents/upload/markdown",
-                 consumes = MediaType. MULTIPART_FORM_DATA_VALUE)
-    public Mono<DocumentResponse> uploadMarkdownToTopic(
+                 consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public DocumentResponse uploadMarkdownToTopic(
             @PathVariable String topic,
-            @RequestPart("file") FilePart file) {
-        log.info("Uploading Markdown to topic '{}': {}", topic, file. filename());
-        return documentService. uploadMarkdownToTopic(topic, file);
+            @RequestParam("file") MultipartFile file) {
+        log.info("Uploading Markdown to topic '{}': {}", topic, file.getOriginalFilename());
+        return documentService.uploadMarkdownToTopic(topic, file);
     }
     
     /**
@@ -74,10 +73,10 @@ public class TopicRagController {
      */
     @PostMapping(value = "/{topic}/query",
                  consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<QueryResponse> queryTopic(
+    public QueryResponse queryTopic(
             @PathVariable String topic,
             @RequestBody QueryRequest request) {
-        log.info("Query topic '{}':  {}", topic, request.getQuery());
+        log.info("Query topic '{}': {}", topic, request.getQuery());
         return ragService.queryTopic(topic, request);
     }
     
@@ -86,10 +85,10 @@ public class TopicRagController {
      */
     @PostMapping(value = "/query/cross",
                  consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<QueryResponse> queryCrossTopic(
+    public QueryResponse queryCrossTopic(
             @RequestParam List<String> topics,
             @RequestBody QueryRequest request) {
-        log.info("Cross-topic query across {}: {}", topics, request. getQuery());
+        log.info("Cross-topic query across {}: {}", topics, request.getQuery());
         return ragService.queryCrossTopic(topics, request);
     }
 }

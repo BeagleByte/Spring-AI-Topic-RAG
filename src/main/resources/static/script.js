@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8080/api/v1';
+const API_BASE = `${window.location.protocol}//${window.location.host}/api/v1`;
 let uploadedFiles = [];
 let selectedTopic = null;
 
@@ -19,7 +19,7 @@ async function loadTopics() {
         Object.keys(topics).forEach(topic => {
             const option = document.createElement('option');
             option.value = topic;
-            option.textContent = topic. charAt(0).toUpperCase() + topic.slice(1);
+            option.textContent = topic.charAt(0).toUpperCase() + topic.slice(1);
             select.appendChild(option);
         });
 
@@ -45,46 +45,72 @@ function setupUploadListeners() {
 
 function setupUploadArea(type, areaSelector, inputSelector, statusSelector, uploadHandler) {
     const area = document.querySelector(areaSelector);
-    const input = document. querySelector(inputSelector);
+    const input = document.querySelector(inputSelector);
 
     area.addEventListener('click', () => input.click());
-    area.addEventListener('dragover', (e) => e.preventDefault());
+    area.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
     area.addEventListener('drop', (e) => {
         e.preventDefault();
-        uploadHandler(e.dataTransfer.files);
+        e.stopPropagation();
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            uploadHandler(files);
+        }
     });
-    input.addEventListener('change', (e) => uploadHandler(e.target.files));
+    input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            uploadHandler(e.target.files);
+        }
+    });
 }
 
 async function uploadPdf(files) {
-    if (! selectedTopic) {
+    if (!selectedTopic) {
         alert('Please select a topic first');
         return;
     }
 
     for (let file of files) {
+        console.log('Uploading file:', file.name, 'Type:', file.type, 'Size:', file.size);
+
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', file, file.name);  // Explicitly set filename
 
         const statusDiv = document.getElementById('pdfStatus');
         statusDiv.innerHTML = `<div class="status info">⏳ Uploading ${file.name}...</div>`;
 
         try {
+            console.log('Sending request to:', `${API_BASE}/topics/${selectedTopic}/documents/upload/pdf`);
+
             const response = await fetch(
                 `${API_BASE}/topics/${selectedTopic}/documents/upload/pdf`,
-                { method: 'POST', body:  formData }
+                {
+                    method: 'POST',
+                    body: formData
+                    // CRITICAL: Do NOT set Content-Type header!
+                    // Browser must set it automatically with multipart boundary
+                }
             );
+
+            console.log('Response status:', response.status);
 
             if (response.ok) {
                 const data = await response.json();
                 uploadedFiles.push(data);
                 statusDiv.innerHTML = `<div class="status success">✅ ${file.name} - ${data.chunksCount} chunks indexed</div>`;
                 updateFileList();
+                loadStats();
             } else {
-                statusDiv. innerHTML = `<div class="status error">❌ Failed to upload ${file.name}</div>`;
+                const errorText = await response.text();
+                console.error('Upload failed:', response.status, errorText);
+                statusDiv.innerHTML = `<div class="status error">❌ Failed to upload ${file.name}: ${errorText}</div>`;
             }
         } catch (error) {
-            statusDiv.innerHTML = `<div class="status error">❌ Error:  ${error.message}</div>`;
+            console.error('Upload error:', error);
+            statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
         }
     }
 }
@@ -96,27 +122,42 @@ async function uploadMarkdown(files) {
     }
 
     for (let file of files) {
+        console.log('Uploading file:', file.name, 'Type:', file.type, 'Size:', file.size);
+
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', file, file.name);  // Explicitly set filename
 
         const statusDiv = document.getElementById('mdStatus');
-        statusDiv.innerHTML = `<div class="status info">⏳ Uploading ${file.name}... </div>`;
+        statusDiv.innerHTML = `<div class="status info">⏳ Uploading ${file.name}...</div>`;
 
         try {
+            console.log('Sending request to:', `${API_BASE}/topics/${selectedTopic}/documents/upload/markdown`);
+
             const response = await fetch(
                 `${API_BASE}/topics/${selectedTopic}/documents/upload/markdown`,
-                { method: 'POST', body:  formData }
+                {
+                    method: 'POST',
+                    body: formData
+                    // CRITICAL: Do NOT set Content-Type header!
+                    // Browser must set it automatically with multipart boundary
+                }
             );
+
+            console.log('Response status:', response.status);
 
             if (response.ok) {
                 const data = await response.json();
                 uploadedFiles.push(data);
-                statusDiv.innerHTML = `<div class="status success">✅ ${file.name} - ${data. chunksCount} chunks indexed</div>`;
+                statusDiv.innerHTML = `<div class="status success">✅ ${file.name} - ${data.chunksCount} chunks indexed</div>`;
                 updateFileList();
+                loadStats();
             } else {
-                statusDiv.innerHTML = `<div class="status error">❌ Failed to upload ${file.name}</div>`;
+                const errorText = await response.text();
+                console.error('Upload failed:', response.status, errorText);
+                statusDiv.innerHTML = `<div class="status error">❌ Failed to upload ${file.name}: ${errorText}</div>`;
             }
         } catch (error) {
+            console.error('Upload error:', error);
             statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
         }
     }
