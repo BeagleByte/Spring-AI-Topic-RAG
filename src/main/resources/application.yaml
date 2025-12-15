@@ -13,10 +13,10 @@ spring:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: llama3.2:3b                    # For text generation (answering questions)
+        model:
+          llama3.2:3b
       embedding:
-        model: "nomic-embed-text"
-        base-url: "http://localhost:11434"       # For creating vectors (embeddings)
+        model: nomic-embed-text
 
   # Point to your existing Qdrant instance
   vectorstore:
